@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'weatherapp/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Weather App</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="city" placeholder="Enter city name" required>
+            <button type="submit">Get Weather</button>
+        </form>
+
+        {% if weather.city %}
+        <div class="weather-card">
+            <!-- ✅ Updated: Proper Unsplash image handling with urlencode -->
+            <img class="city-image"
+                 src="https://source.unsplash.com/800x400/?{{ weather.city|urlencode }}"
+                 onerror="this.onerror=null; this.src='https://source.unsplash.com/800x400/?city'"
+                 alt="{{ weather.city }}">
+
+            <div class="weather-info">
+                <h2>Weather in {{ weather.city }}</h2>
+                <p>Temperature: {{ weather.temperature }} °C</p>
+                <p>Description: {{ weather.description }}</p>
+                <img src="https://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="weather icon">
+            </div>
+        </div>
+        {% elif weather.error %}
+            <p class="error">{{ weather.error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
+
